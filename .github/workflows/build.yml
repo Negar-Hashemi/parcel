@@ -35,10 +35,13 @@ jobs:
           sudo apt install -y build-essential python3-dev
 
       - name: Install dependencies
+        if: matrix.os == 'ubuntu-latest'
         run: |
           rm -rf node_modules package-lock.json
           npm cache clean --force
           npm install --force
+        if: matrix.os == 'windows-latest'
+        run: npm install --force
 
       - name: Manually rebuild @parcel/watcher if necessary
         run: |
