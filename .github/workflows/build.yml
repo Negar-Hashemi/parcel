@@ -28,9 +28,23 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies
-        run: npm install --force
+      - name: Install system dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential python3-dev
 
+      - name: Install dependencies
+        run: |
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
+          npm install --force
+
+      - name: Manually rebuild @parcel/watcher if necessary
+        run: |
+          cd node_modules/@parcel/watcher || exit 0
+          node-gyp rebuild || echo "Skipping rebuild"
+        continue-on-error: true
 
       - name: Testing on OS (${{ matrix.os }}) with Node.js (version ${{ matrix.node-version }}) attempt ${{ matrix.attempt }}
         run: |
