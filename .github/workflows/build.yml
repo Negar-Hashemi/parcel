@@ -40,7 +40,7 @@ jobs:
           rm -rf node_modules package-lock.json
           npm cache clean --force
           npm install --force
-        if: matrix.os == 'windows-latest'
+        elseif: matrix.os == 'windows-latest'
         run: npm install --force
 
       - name: Manually rebuild @parcel/watcher if necessary
